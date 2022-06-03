@@ -128,9 +128,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 function dropLoot (enemyKilled: Sprite) {
-    goldAmount = randint(0, 4)
+    goldAmount = randint(5, 10)
     for (let index = 0; index < goldAmount; index++) {
-        force = randint(1, 3)
         goldCoin = sprites.create(img`
             . . b b b b . . 
             . b 5 5 5 5 b . 
@@ -142,7 +141,21 @@ function dropLoot (enemyKilled: Sprite) {
             . . f f f f . . 
             `, SpriteKind.loot)
         goldCoin.setPosition(enemyKilled.x, enemyKilled.y)
+        goldCoin.setVelocity(randint(-100, 100), randint(-100, 100))
+        goldCoin.setStayInScreen(true)
+        goldCoin.setBounceOnWall(true)
+        goldCoin.fx = 150
+        goldCoin.fy = 150
     }
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
+    info.changeScoreBy(1)
+    changePlayerGoldBy(1)
+    otherSprite.destroy(effects.rings, 100)
+})
+function changePlayerGoldBy (num: number) {
+    playerGold += num
+    UI_Gold.setText("x" + playerGold)
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     dropLoot(otherSprite)
@@ -151,14 +164,16 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
-    otherSprite.destroy(effects.confetti, 100)
+    scene.cameraShake(4, 500)
+    otherSprite.destroy(effects.fire, 100)
 })
 let previousScore = 0
 let bogeySprite: Sprite = null
 let goldCoin: Sprite = null
-let force = 0
 let goldAmount = 0
 let projectile: Sprite = null
+let playerGold = 0
+let UI_Gold: TextSprite = null
 let playerSprite: Sprite = null
 playerSprite = sprites.create(assets.image`heroWalkSideRight1`, SpriteKind.Player)
 controller.moveSprite(playerSprite, 100, 100)
@@ -166,6 +181,86 @@ playerSprite.setStayInScreen(true)
 info.setLife(3)
 let pointsUntilNewLife = 10
 scene.setBackgroundColor(13)
+UI_Gold = textsprite.create("x0", 1, 15)
+UI_Gold.setIcon(img`
+    . . b b b b . . 
+    . b 5 5 5 5 b . 
+    b 5 d 3 3 d 5 b 
+    b 5 3 5 5 1 5 b 
+    c 5 3 5 5 1 d c 
+    c d d 1 1 d d c 
+    . f d d d d f . 
+    . . f f f f . . 
+    `)
+UI_Gold.setBorder(1, 6, 1)
+UI_Gold.setPosition(scene.screenWidth() / 2, 5)
+let ui_gold_frames = [
+img`
+    . . b b b b . . 
+    . b 5 5 5 5 b . 
+    b 5 d 3 3 d 5 b 
+    b 5 3 5 5 1 5 b 
+    c 5 3 5 5 1 d c 
+    c d d 1 1 d d c 
+    . f d d d d f . 
+    . . f f f f . . 
+    `,
+img`
+    . . b b b . . . 
+    . b 5 5 5 b . . 
+    b 5 d 3 d 5 b . 
+    b 5 3 5 1 5 b . 
+    c 5 3 5 1 d c . 
+    c 5 d 1 d d c . 
+    . f d d d f . . 
+    . . f f f . . . 
+    `,
+img`
+    . . . b b . . . 
+    . . b 5 5 b . . 
+    . b 5 d 1 5 b . 
+    . b 5 3 1 5 b . 
+    . c 5 3 1 d c . 
+    . c 5 1 d d c . 
+    . . f d d f . . 
+    . . . f f . . . 
+    `,
+img`
+    . . . b b . . . 
+    . . b 5 5 b . . 
+    . . b 1 1 b . . 
+    . . b 5 5 b . . 
+    . . b d d b . . 
+    . . c d d c . . 
+    . . c 3 3 c . . 
+    . . . f f . . . 
+    `,
+img`
+    . . . b b . . . 
+    . . b 5 5 b . . 
+    . b 5 1 d 5 b . 
+    . b 5 1 3 5 b . 
+    . c d 1 3 5 c . 
+    . c d d 1 5 c . 
+    . . f d d f . . 
+    . . . f f . . . 
+    `,
+img`
+    . . . b b b . . 
+    . . b 5 5 5 b . 
+    . b 5 d 3 d 5 b 
+    . b 5 1 5 3 5 b 
+    . c d 1 5 3 5 c 
+    . c d d 1 d 5 c 
+    . . f d d d f . 
+    . . . f f f . . 
+    `
+]
+let ui_gold_currentFrameIndex = 0
+playerGold = 0
+game.onUpdate(function () {
+	
+})
 game.onUpdateInterval(1000, function () {
     bogeySprite = sprites.create(img`
         ........................
@@ -258,4 +353,12 @@ forever(function () {
         previousScore = 0
         info.changeLifeBy(1)
     }
+})
+game.onUpdateInterval(200, function () {
+    if (ui_gold_currentFrameIndex >= ui_gold_frames.length - 1) {
+        ui_gold_currentFrameIndex = 0
+    } else {
+        ui_gold_currentFrameIndex += 1
+    }
+    UI_Gold.setIcon(ui_gold_frames[ui_gold_currentFrameIndex])
 })
