@@ -130,6 +130,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.SuperEnemy, function (sprite, otherSprite) {
+    music.bigCrash.play()
     info.changeLifeBy(-2)
     scene.cameraShake(4, 500)
     otherSprite.destroy(effects.bubbles, 100)
@@ -175,6 +176,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
     info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    music.smallCrash.play()
     info.changeLifeBy(-1)
     scene.cameraShake(4, 500)
     otherSprite.destroy(effects.fire, 100)
@@ -299,9 +301,6 @@ game.onUpdateInterval(9000, function () {
     Super_bogey.setFlag(SpriteFlag.AutoDestroy, true)
 })
 game.onUpdateInterval(1000, function () {
-	
-})
-game.onUpdateInterval(1000, function () {
     bogeySprite = sprites.create(img`
         ........................
         ........................
@@ -403,10 +402,6 @@ forever(function () {
     if (controller.right.isPressed()) {
     	
     }
-})
-forever(function () {
-    music.setVolume(75)
-    music.playMelody("A G F G F E D C ", 120)
 })
 game.onUpdateInterval(200, function () {
     if (ui_gold_currentFrameIndex >= ui_gold_frames.length - 1) {
