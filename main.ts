@@ -363,6 +363,10 @@ forever(function () {
     	
     }
 })
+forever(function () {
+    music.setVolume(75)
+    music.playMelody("A G F G F E D C ", 120)
+})
 game.onUpdateInterval(200, function () {
     if (ui_gold_currentFrameIndex >= ui_gold_frames.length - 1) {
         ui_gold_currentFrameIndex = 0
