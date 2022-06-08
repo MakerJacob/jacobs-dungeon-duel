@@ -151,7 +151,7 @@ function dropLoot (enemyKilled: Sprite) {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
     info.changeScoreBy(1)
     changePlayerGoldBy(1)
-    otherSprite.destroy(effects.rings, 100)
+    otherSprite.destroy(effects.starField, 100)
 })
 function changePlayerGoldBy (num: number) {
     playerGold += num
@@ -258,6 +258,7 @@ img`
 ]
 let ui_gold_currentFrameIndex = 0
 playerGold = 0
+music.setVolume(10)
 game.onUpdate(function () {
 	
 })
@@ -352,6 +353,11 @@ forever(function () {
     if (previousScore >= 10) {
         previousScore = 0
         info.changeLifeBy(1)
+    }
+})
+forever(function () {
+    if (controller.right.isPressed()) {
+    	
     }
 })
 game.onUpdateInterval(200, function () {
