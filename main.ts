@@ -258,7 +258,6 @@ img`
 ]
 let ui_gold_currentFrameIndex = 0
 playerGold = 0
-music.setVolume(5)
 game.onUpdate(function () {
 	
 })
@@ -354,6 +353,9 @@ forever(function () {
         previousScore = 0
         info.changeLifeBy(1)
     }
+})
+forever(function () {
+    music.playMelody("A G F G F E D C ", 120)
 })
 forever(function () {
     if (controller.right.isPressed()) {
