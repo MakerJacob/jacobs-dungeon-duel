@@ -157,7 +157,6 @@ function dropLoot (enemyKilled: Sprite) {
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
-    info.changeScoreBy(1)
     changePlayerGoldBy(1)
     otherSprite.destroy(effects.starField, 100)
 })
@@ -274,9 +273,6 @@ img`
     `
 ]
 playerGold = 0
-game.onUpdate(function () {
-	
-})
 game.onUpdateInterval(9000, function () {
     Super_bogey = sprites.create(img`
         ...........fffffff...ccfff..........
@@ -402,6 +398,19 @@ forever(function () {
     if (controller.right.isPressed()) {
     	
     }
+})
+game.onUpdateInterval(randint(1, 100000), function () {
+    goldCoin = sprites.create(img`
+        . . b b b b . . 
+        . b 5 5 5 5 b . 
+        b 5 d 3 3 d 5 b 
+        b 5 3 5 5 1 5 b 
+        c 5 3 5 5 1 d c 
+        c d d 1 1 d d c 
+        . f d d d d f . 
+        . . f f f f . . 
+        `, SpriteKind.loot)
+    goldCoin.setPosition(randint(0, 160), randint(0, 120))
 })
 game.onUpdateInterval(200, function () {
     if (ui_gold_currentFrameIndex >= ui_gold_frames.length - 1) {
