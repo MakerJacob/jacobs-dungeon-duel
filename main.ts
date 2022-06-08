@@ -258,7 +258,7 @@ img`
 ]
 let ui_gold_currentFrameIndex = 0
 playerGold = 0
-music.setVolume(10)
+music.setVolume(5)
 game.onUpdate(function () {
 	
 })
