@@ -1,5 +1,7 @@
 namespace SpriteKind {
     export const loot = SpriteKind.create()
+    export const SuperEnemy = SpriteKind.create()
+    export const Suploot = SpriteKind.create()
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(img`
@@ -123,9 +125,14 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         ........................
         ........................
         `],
-    100,
+    400,
     false
     )
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.SuperEnemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-2)
+    scene.cameraShake(4, 500)
+    otherSprite.destroy(effects.bubbles, 100)
 })
 function dropLoot (enemyKilled: Sprite) {
     goldAmount = randint(5, 10)
@@ -151,7 +158,12 @@ function dropLoot (enemyKilled: Sprite) {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
     info.changeScoreBy(1)
     changePlayerGoldBy(1)
-    otherSprite.destroy(effects.rings, 100)
+    otherSprite.destroy(effects.starField, 100)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    info.changeLifeBy(1)
+    changePlayerGoldBy(1)
+    otherSprite.destroy(effects.starField, 100)
 })
 function changePlayerGoldBy (num: number) {
     playerGold += num
@@ -167,8 +179,11 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     scene.cameraShake(4, 500)
     otherSprite.destroy(effects.fire, 100)
 })
+let Heart_peice: Sprite = null
+let ui_gold_currentFrameIndex = 0
 let previousScore = 0
 let bogeySprite: Sprite = null
+let Super_bogey: Sprite = null
 let goldCoin: Sprite = null
 let goldAmount = 0
 let projectile: Sprite = null
@@ -186,8 +201,8 @@ UI_Gold.setIcon(img`
     . . b b b b . . 
     . b 5 5 5 5 b . 
     b 5 d 3 3 d 5 b 
-    b 5 3 5 5 1 5 b 
-    c 5 3 5 5 1 d c 
+    b 3 3 5 5 1 5 b 
+    c 1 3 5 5 1 d c 
     c d d 1 1 d d c 
     . f d d d d f . 
     . . f f f f . . 
@@ -256,9 +271,35 @@ img`
     . . . f f f . . 
     `
 ]
-let ui_gold_currentFrameIndex = 0
 playerGold = 0
+music.setVolume(5)
 game.onUpdate(function () {
+	
+})
+game.onUpdateInterval(9000, function () {
+    Super_bogey = sprites.create(img`
+        ...........fffffff...ccfff..........
+        ..........fbbbbbbbffcbbbbf..........
+        ..........fbb111bbbbbffbf...........
+        ..........fb11111ffbbbbff...........
+        ..........f1cccc1ffbbbbbcff.........
+        ..........ffc1c1c1bbcbcbcccf........
+        ...........fcc3331bbbcbcbcccf..ccccc
+        ............c333c1bbbcbcbccccfcddbbc
+        ............c333c1bbbbbbbcccccddbcc.
+        ............c333c11bbbbbccccccbbcc..
+        ...........cc331c11bbbbccccccfbccf..
+        ...........cc13c11cbbbcccccbbcfccf..
+        ...........c111111cbbbfdddddc.fbbcf.
+        ............cc1111fbdbbfdddc...fbbf.
+        ..............cccfffbdbbfcc.....fbbf
+        ....................fffff........fff
+        `, SpriteKind.SuperEnemy)
+    Super_bogey.setVelocity(-100, 0)
+    Super_bogey.setPosition(160, randint(5, 115))
+    Super_bogey.setFlag(SpriteFlag.AutoDestroy, true)
+})
+game.onUpdateInterval(1000, function () {
 	
 })
 game.onUpdateInterval(1000, function () {
@@ -349,9 +390,19 @@ game.onUpdateInterval(1000, function () {
     )
 })
 forever(function () {
+    if (true) {
+    	
+    }
+})
+forever(function () {
     if (previousScore >= 10) {
         previousScore = 0
         info.changeLifeBy(1)
+    }
+})
+forever(function () {
+    if (controller.right.isPressed()) {
+    	
     }
 })
 game.onUpdateInterval(200, function () {
@@ -361,4 +412,31 @@ game.onUpdateInterval(200, function () {
         ui_gold_currentFrameIndex += 1
     }
     UI_Gold.setIcon(ui_gold_frames[ui_gold_currentFrameIndex])
+})
+game.onUpdateInterval(10000, function () {
+    Heart_peice = sprites.create(img`
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        .......22...22......
+        ......2322.2222.....
+        ......232222222.....
+        ......222222222.....
+        .......22222b2......
+        ........222b2.......
+        .........222........
+        ..........2.........
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        `, SpriteKind.Food)
+    Heart_peice.setVelocity(-100, 0)
+    Heart_peice.setPosition(160, randint(5, 115))
+    Heart_peice.setFlag(SpriteFlag.AutoDestroy, true)
 })

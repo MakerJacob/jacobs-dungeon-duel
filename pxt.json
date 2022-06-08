@@ -1,10 +1,11 @@
 {
-    "name": "Jacob's Dungeon Duel - Copy",
+    "name": "Jacob's Dungeon Duel",
     "description": "",
     "dependencies": {
         "device": "*",
         "animation": "*",
-        "arcade-text": "github:microsoft/arcade-text#v1.3.0"
+        "arcade-text": "github:microsoft/arcade-text#v1.3.0",
+        "keyboard": "*"
     },
     "files": [
         "main.blocks",
@@ -20,7 +21,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.8.25",
+        "target": "1.8.26",
         "targetId": "arcade"
     },
     "supportedTargets": [
