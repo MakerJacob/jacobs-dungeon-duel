@@ -355,6 +355,7 @@ forever(function () {
     }
 })
 forever(function () {
+    music.setVolume(75)
     music.playMelody("A G F G F E D C ", 120)
 })
 forever(function () {
