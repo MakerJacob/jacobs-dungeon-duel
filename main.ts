@@ -273,6 +273,8 @@ img`
     `
 ]
 playerGold = 0
+let super_bogey_speed = -100
+let speedy_bogey = -100
 game.onUpdateInterval(9000, function () {
     Super_bogey = sprites.create(img`
         ...........fffffff...ccfff..........
@@ -292,7 +294,7 @@ game.onUpdateInterval(9000, function () {
         ..............cccfffbdbbfcc.....fbbf
         ....................fffff........fff
         `, SpriteKind.SuperEnemy)
-    Super_bogey.setVelocity(-100, 0)
+    Super_bogey.setVelocity(super_bogey_speed, 0)
     Super_bogey.setPosition(160, randint(5, 115))
     Super_bogey.setFlag(SpriteFlag.AutoDestroy, true)
 })
@@ -323,7 +325,7 @@ game.onUpdateInterval(1000, function () {
         ........................
         ........................
         `, SpriteKind.Enemy)
-    bogeySprite.setVelocity(-100, 0)
+    bogeySprite.setVelocity(speedy_bogey, 0)
     bogeySprite.setPosition(160, randint(5, 115))
     bogeySprite.setFlag(SpriteFlag.AutoDestroy, true)
     animation.runImageAnimation(
@@ -419,6 +421,12 @@ game.onUpdateInterval(200, function () {
         ui_gold_currentFrameIndex += 1
     }
     UI_Gold.setIcon(ui_gold_frames[ui_gold_currentFrameIndex])
+})
+game.onUpdateInterval(4500, function () {
+    super_bogey_speed += -10
+})
+game.onUpdateInterval(4500, function () {
+    speedy_bogey += -10
 })
 game.onUpdateInterval(10000, function () {
     Heart_peice = sprites.create(img`
