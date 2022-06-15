@@ -136,7 +136,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SuperEnemy, function (sprite, ot
     otherSprite.destroy(effects.bubbles, 100)
 })
 function dropLoot (enemyKilled: Sprite) {
-    goldAmount = randint(5, 10)
+    goldAmount = 1
     for (let index = 0; index < goldAmount; index++) {
         goldCoin = sprites.create(img`
             . . b b b b . . 
@@ -157,7 +157,7 @@ function dropLoot (enemyKilled: Sprite) {
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
-    changePlayerGoldBy(1)
+    changePlayerGoldBy(randint(1, 20))
     otherSprite.destroy(effects.starField, 100)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
