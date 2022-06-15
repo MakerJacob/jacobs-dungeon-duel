@@ -8,63 +8,10 @@ namespace SpriteKind {
     export const SuperEnemy = SpriteKind.create()
     export const Suploot = SpriteKind.create()
 }
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile = sprites.createProjectileFromSprite(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . 2 2 2 2 . . . 
-        . . . . . . . 2 2 1 1 1 1 2 . . 
-        . . . . 2 2 3 3 1 1 1 1 1 1 . . 
-        . . 3 3 3 3 1 1 1 1 1 1 1 1 . . 
-        . . 1 1 1 1 1 1 1 1 1 1 1 1 . . 
-        . . 3 3 2 2 3 1 1 1 1 1 1 1 . . 
-        . . . . . . 2 2 3 1 1 1 1 2 . . 
-        . . . . . . . . . 2 2 2 2 . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, playerSprite, 100, 0)
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.SuperEnemy, function (sprite, otherSprite) {
-    info.changeLifeBy(-2)
-    scene.cameraShake(4, 500)
-    otherSprite.destroy(effects.bubbles, 100)
-})
-function dropLoot (enemyKilled: Sprite) {
-    goldAmount = randint(5, 10)
-    for (let index = 0; index < goldAmount; index++) {
-        goldCoin = sprites.create(img`
-            . . b b b b . . 
-            . b 5 5 5 5 b . 
-            b 5 d 3 3 d 5 b 
-            b 5 3 5 5 1 5 b 
-            c 5 3 5 5 1 d c 
-            c d d 1 1 d d c 
-            . f d d d d f . 
-            . . f f f f . . 
-            `, SpriteKind.loot)
-        goldCoin.setPosition(enemyKilled.x, enemyKilled.y)
-        goldCoin.setVelocity(randint(-100, 100), randint(-100, 100))
-        goldCoin.setStayInScreen(true)
-        goldCoin.setBounceOnWall(true)
-        goldCoin.fx = 150
-        goldCoin.fy = 150
-    }
+namespace StatusBarKind {
+    export const EnemiesLeft = StatusBarKind.create()
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
-    info.changeScoreBy(1)
-    changePlayerGoldBy(1)
-    otherSprite.destroy(effects.starField, 100)
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
-    info.changeLifeBy(1)
-    changePlayerGoldBy(1)
-    otherSprite.destroy(effects.starField, 100)
-})
-function initPlayerAnimation () {
+function setupPlayerAnimation () {
     characterAnimations.loopFrames(
     playerSprite,
     [img`
@@ -385,6 +332,73 @@ function initPlayerAnimation () {
     characterAnimations.rule(Predicate.NotMoving)
     )
 }
+function setupWaveStatusBar () {
+    currentWave_statusBar = statusbars.create(100, 8, StatusBarKind.EnemiesLeft)
+    currentWave_statusBar.positionDirection(CollisionDirection.Top)
+    currentWave_statusBar.setColor(2, 3)
+    currentWave_statusBar.setBarBorder(1, 15)
+    currentWave_statusBar.value = 100
+    currentWave_statusBarText = textsprite.create("CURRENT WAVE")
+    currentWave_statusBarText.setPosition(scene.screenWidth() / 2, 4)
+    currentWave_statusBarText.z = 100
+    currentWave_enemiesLeft = 0
+}
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . 2 2 2 2 . . . 
+        . . . . . . . 2 2 1 1 1 1 2 . . 
+        . . . . 2 2 3 3 1 1 1 1 1 1 . . 
+        . . 3 3 3 3 1 1 1 1 1 1 1 1 . . 
+        . . 1 1 1 1 1 1 1 1 1 1 1 1 . . 
+        . . 3 3 2 2 3 1 1 1 1 1 1 1 . . 
+        . . . . . . 2 2 3 1 1 1 1 2 . . 
+        . . . . . . . . . 2 2 2 2 . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, playerSprite, 100, 0)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.SuperEnemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-2)
+    scene.cameraShake(4, 500)
+    otherSprite.destroy(effects.bubbles, 100)
+})
+function dropLoot (enemyKilled: Sprite) {
+    goldAmount = randint(5, 10)
+    for (let index = 0; index < goldAmount; index++) {
+        goldCoin = sprites.create(img`
+            . . b b b b . . 
+            . b 5 5 5 5 b . 
+            b 5 d 3 3 d 5 b 
+            b 5 3 5 5 1 5 b 
+            c 5 3 5 5 1 d c 
+            c d d 1 1 d d c 
+            . f d d d d f . 
+            . . f f f f . . 
+            `, SpriteKind.loot)
+        goldCoin.setPosition(enemyKilled.x, enemyKilled.y)
+        goldCoin.setVelocity(randint(-100, 100), randint(-100, 100))
+        goldCoin.setStayInScreen(true)
+        goldCoin.setBounceOnWall(true)
+        goldCoin.fx = 150
+        goldCoin.fy = 150
+    }
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.loot, function (sprite, otherSprite) {
+    info.changeScoreBy(1)
+    changePlayerGoldBy(1)
+    otherSprite.destroy(effects.starField, 100)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    info.changeLifeBy(1)
+    changePlayerGoldBy(1)
+    otherSprite.destroy(effects.starField, 100)
+})
 function changePlayerGoldBy (num: number) {
     playerGold += num
     UI_Gold.setText("x" + playerGold)
@@ -408,6 +422,9 @@ let Super_bogey: Sprite = null
 let goldCoin: Sprite = null
 let goldAmount = 0
 let projectile: Sprite = null
+let currentWave_enemiesLeft = 0
+let currentWave_statusBarText: TextSprite = null
+let currentWave_statusBar: StatusBarSprite = null
 let playerGold = 0
 let UI_Gold: TextSprite = null
 let playerSprite: Sprite = null
@@ -430,7 +447,7 @@ UI_Gold.setIcon(img`
     . . f f f f . . 
     `)
 UI_Gold.setBorder(1, 6, 1)
-UI_Gold.setPosition(scene.screenWidth() / 2, 5)
+UI_Gold.setPosition(UI_Gold.width / 2 - 1, 16)
 let ui_gold_frames = [
 img`
     . . b b b b . . 
@@ -495,7 +512,8 @@ img`
 ]
 playerGold = 0
 music.setVolume(5)
-initPlayerAnimation()
+setupPlayerAnimation()
+setupWaveStatusBar()
 game.onUpdate(function () {
     if (controller.dx() != 0 || controller.dy() != 0) {
         if (controller.dx() > 0) {
@@ -533,9 +551,6 @@ game.onUpdateInterval(9000, function () {
     Super_bogey.setVelocity(-100, 0)
     Super_bogey.setPosition(160, randint(5, 115))
     Super_bogey.setFlag(SpriteFlag.AutoDestroy, true)
-})
-game.onUpdateInterval(1000, function () {
-	
 })
 game.onUpdateInterval(1000, function () {
     bogeySprite = sprites.create(img`
